@@ -122,10 +122,13 @@ function escapeHtml(str) {
 }
 
 // Form Submit Handler (Create or Update)
+
 studentForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
+
+    const id = studentIdInput.value;
 
     const studentData = {
         name: studentNameInput.value.trim(),
@@ -133,21 +136,37 @@ studentForm.addEventListener("submit", async (e) => {
         course: studentCourseInput.value.trim()
     };
 
-    const { error } = await supabaseClient
-        .from("stdtable")
-        .insert([studentData]);
+    let result;
 
-    if (error) {
+    if (id) {
+        // Update existing student
+        result = await supabaseClient
+            .from("stdtable")
+            .update(studentData)
+            .eq("id", id);
+    } else {
+        // Add new student
+        result = await supabaseClient
+            .from("stdtable")
+            .insert([studentData]);
+    }
+
+    if (result.error) {
+        console.log(result.error);
         showToast("Error saving student!", "error");
-        console.log(error);
         return;
     }
 
-    showToast("Student saved successfully!");
-    studentForm.reset();
-    await getstd();
+    if (id) {
+        showToast("Student updated successfully!");
+    } else {
+        showToast("Student added successfully!");
+    }
 
+    resetForm();
+    await getstd();
 });
+
 async function getstd() {
     const { data, error } = await supabaseClient
         .from("stdtable")
@@ -160,7 +179,6 @@ async function getstd() {
 
     studentsList = data;
     renderTable();
-  
 }
 // View Student Details
 window.viewStudent = function(id) {
