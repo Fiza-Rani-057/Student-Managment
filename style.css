@@ -429,8 +429,22 @@ tbody tr:hover { background: rgba(16, 185, 129, 0.03); }
     color: var(--text-muted);
     margin-bottom: 1.5rem;
 }
+.modal-actions .btn {
+    flex: 1;
+    max-width: 140px;
+}
+.modal-actions { 
+    display: flex; 
+    gap: 0.75rem; 
+}
 
-.modal-actions { display: flex; gap: 0.75rem; }
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
 
 /* Toast Notifications */
 .toast-container {
