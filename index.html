@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- View Student Modal -->
+    <div id="view-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-id-card"></i> Student Details</h3>
+                <button id="close-view-modal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-item">
+                    <span class="detail-label" >Full Name</span>
+                    <span id="view-name" class="detail-value">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label" >Email Address</span>
+                    <span id="view-email" class="detail-value">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Course / Program</span>
+                    <span id="view-course" class="detail-value">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay hidden">
+        <div class="modal-card text-center">
+            <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete this student record? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="cancel-delete-btn" class="btn btn-secondary">Cancel</button>
+                <button id="confirm-delete-btn" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div>
+                    <h1>Student Portal</h1>
+                    <p>Management System & Records</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Form Section -->
+        <section class="card form-card mb-2">
+            <div class="card-header">
+                <h2 id="form-title"><i class="fa-solid fa-user-plus"></i> Add New Student</h2>
+                <span id="form-mode-badge" class="badge">New Record</span>
+            </div>
+            
+            <form id="student-form" novalidate>
+                <input type="hidden" id="student-id">
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="student-name">Student Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="student-name" placeholder="e.g. Fiza Rani" required>
+                        </div>
+                        <span class="error-message" id="name-error">Please enter a valid name.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-email">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="student-email" placeholder="e.g. fiza@example.com" required>
+                        </div>
+                        <span class="error-message" id="email-error">Please enter a valid email address.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student-course">Course / Program</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-book-open"></i>
+                            <input type="text" id="student-course" placeholder="e.g. Frontend Development" required>
+                        </div>
+                        <span class="error-message" id="course-error">Please enter a course name.</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="submit-btn" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Student
+                    </button>
+                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary hidden">
+                        <i class="fa-solid fa-xmark"></i> Cancel Edit
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Table Section -->
+        <section class="card table-card">
+            <div class="table-header-row">
+                <div class="table-title-area">
+                    <h2><i class="fa-solid fa-users-rectangle"></i> Enrolled Students</h2>
+                    <span id="student-count" class="count-pill">0 Students</span>
+                </div>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Search by name, email, course...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="students-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Course</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-table-body">
+                        <!-- Dynamic Rows Loaded Here -->
+                        <tr>
+                            <td colspan="4" class="text-center empty-state">
+                                No students added yet. Fill out the form above to get started.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
