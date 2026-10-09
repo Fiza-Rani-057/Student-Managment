@@ -145,8 +145,23 @@ studentForm.addEventListener("submit", async (e) => {
 
     showToast("Student saved successfully!");
     studentForm.reset();
+    await getstd();
 
 });
+async function getstd() {
+    const { data, error } = await supabaseClient
+        .from("stdtable")
+        .select("*");
+
+    if (error) {
+        console.log("There is an error:", error);
+        return;
+    }
+
+    studentsList = data;
+    renderTable();
+  
+}
 // View Student Details
 window.viewStudent = function(id) {
     const student = studentsList.find(s => s.id === id);
