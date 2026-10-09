@@ -1,4 +1,7 @@
- 
+const { createClient } = supabase;
+const supabaseURL = 'https://fyitjrqdacpgpoehmrfn.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5aXRqcnFkYWNwZ3BvZWhtcmZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxNDUyMTAsImV4cCI6MjEwNTcyMTIxMH0.EHa1IEnDniSB1y_bDpZq2ycI64pqukv8Y_DpGz-aLVg';
+const supabaseClient = createClient(supabaseURL, supabaseKey);
 // DOM Elements
 const studentForm = document.getElementById("student-form");
 const studentIdInput = document.getElementById("student-id");
@@ -37,7 +40,6 @@ function showToast(message, type = "success") {
     const icon = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
     toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
     toastContainer.appendChild(toast);
-
     setTimeout(() => toast.remove(), 3500);
 }
 
@@ -120,33 +122,31 @@ function escapeHtml(str) {
 }
 
 // Form Submit Handler (Create or Update)
-studentForm.addEventListener("submit", (e) => {
+studentForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
-    const id = studentIdInput.value;
     const studentData = {
         name: studentNameInput.value.trim(),
         email: studentEmailInput.value.trim(),
         course: studentCourseInput.value.trim()
     };
 
-    if (id) {
-        // Update existing record
-        studentsList = studentsList.map(s => s.id === id ? { ...s, ...studentData } : s);
-        showToast("Student record updated successfully!");
-        resetForm();
-    } else {
-        // Create new record
-        studentData.id = Date.now().toString();
-        studentsList.unshift(studentData);
-        showToast("Student saved successfully!");
-        studentForm.reset();
+    const { error } = await supabaseClient
+        .from("stdtable")
+        .insert([studentData]);
+
+    if (error) {
+        showToast("Error saving student!", "error");
+        console.log(error);
+        return;
     }
 
-    renderTable();
-});
+    showToast("Student saved successfully!");
+    studentForm.reset();
 
+});
 // View Student Details
 window.viewStudent = function(id) {
     const student = studentsList.find(s => s.id === id);
