@@ -270,3 +270,5 @@ confirmDeleteBtn.addEventListener("click", async () => {
 
 // Search Filter
 searchInput.addEventListener("input", () => renderTable());
+// Load existing students when page opens
+getstd();
