@@ -164,12 +164,14 @@ async function getstd() {
 }
 // View Student Details
 window.viewStudent = function(id) {
-    const student = studentsList.find(s => s.id === id);
+    const student = studentsList.find(s => String(s.id) === String(id));
+
     if (!student) return;
 
     viewName.textContent = student.name;
     viewEmail.textContent = student.email;
     viewCourse.textContent = student.course;
+
     viewModal.classList.remove("hidden");
 };
 
@@ -177,20 +179,29 @@ closeViewModalBtn.addEventListener("click", () => viewModal.classList.add("hidde
 
 // Edit Student Trigger
 window.editStudent = function(id) {
-    const student = studentsList.find(s => s.id === id);
-    if (!student) return;
+    const student = studentsList.find(
+        s => String(s.id) === String(id)
+    );
+
+    if (!student) {
+        console.log("Student not found:", id);
+        return;
+    }
 
     studentIdInput.value = student.id;
     studentNameInput.value = student.name;
     studentEmailInput.value = student.email;
     studentCourseInput.value = student.course;
 
-    formTitle.innerHTML = `<i class="fa-solid fa-user-pen"></i> Edit Student`;
+    formTitle.innerHTML = '<i class="fa-solid fa-user-pen"></i> Edit Student';
     formModeBadge.textContent = "Editing Mode";
-    submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Update Record`;
+    submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Update Record';
+
     cancelEditBtn.classList.remove("hidden");
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    console.log("Editing student ID:", studentIdInput.value);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 // Cancel Edit Mode
@@ -217,14 +228,26 @@ cancelDeleteBtn.addEventListener("click", () => {
     deleteModal.classList.add("hidden");
 });
 
-confirmDeleteBtn.addEventListener("click", () => {
+confirmDeleteBtn.addEventListener("click", async () => {
     if (!deleteTargetId) return;
 
-    studentsList = studentsList.filter(s => s.id !== deleteTargetId);
-    showToast("Student record deleted successfully!");
+    const { error } = await supabaseClient
+        .from("stdtable")
+        .delete()
+        .eq("id", deleteTargetId);
+
+    if (error) {
+        console.log(error);
+        showToast("Delete failed!", "error");
+        return;
+    }
+
+    showToast("Student deleted successfully!");
+
     deleteTargetId = null;
     deleteModal.classList.add("hidden");
-    renderTable();
+
+    await getstd();
 });
 
 // Search Filter
